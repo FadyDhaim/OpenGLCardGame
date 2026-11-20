@@ -10,6 +10,9 @@ constexpr float RoomWidth = 10.0F;
 constexpr float RoomHeight = 4.2F;
 constexpr float RoomDepth = 10.0F;
 constexpr float TableTop = GameState::TableTopY;
+constexpr glm::vec3 PendantLightPosition{0.0F, 3.62F, 0.0F};
+constexpr glm::vec3 CandleLightColor{8.0F, 4.4F, 2.0F};
+constexpr float CandleLightFalloffDistance = 10.5F;
 
 glm::mat4 translatedScaled(const glm::vec3& position, const glm::vec3& scale) {
     return glm::translate(glm::mat4(1.0F), position) * glm::scale(glm::mat4(1.0F), scale);
@@ -55,7 +58,8 @@ void Scene::render(const GameState& gameState, int framebufferWidth, int framebu
                                                    static_cast<float>(framebufferWidth) / static_cast<float>(framebufferHeight),
                                                    0.08F,
                                                    60.0F);
-    renderer_.beginFrame(projection * view, camera.position);
+    renderer_.beginFrame(projection * view, camera.position, PendantLightPosition, CandleLightColor,
+                         CandleLightFalloffDistance);
 
     drawRoom();
     drawTable();
@@ -160,7 +164,6 @@ void Scene::drawProps() {
     }
     Material poster;
     poster.diffuseTexture = posterTexture_;
-    poster.emissive = 0.10F;
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthMask(GL_FALSE);
@@ -210,7 +213,7 @@ void Scene::drawProps() {
                    solid({0.20F, 0.17F, 0.13F}));
     renderer_.draw(Primitive::Cone, translatedScaled({0.0F, 3.61F, 0.0F}, {0.54F, 0.34F, 0.54F}),
                    solid({0.28F, 0.23F, 0.15F}));
-    renderer_.draw(Primitive::Sphere, translatedScaled({0.0F, 3.50F, 0.0F}, {0.18F, 0.18F, 0.18F}),
+    renderer_.draw(Primitive::Sphere, translatedScaled(PendantLightPosition, {0.18F, 0.18F, 0.18F}),
                    solid({1.0F, 0.79F, 0.43F}, 5.0F));
 }
 

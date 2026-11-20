@@ -125,12 +125,17 @@ GLuint Renderer::loadTexture(const std::filesystem::path& filePath, bool srgb) {
     return texture;
 }
 
-void Renderer::beginFrame(const glm::mat4& viewProjection, const glm::vec3& cameraPosition) {
+void Renderer::beginFrame(const glm::mat4& viewProjection,
+                          const glm::vec3& cameraPosition,
+                          const glm::vec3& lightPosition,
+                          const glm::vec3& lightColor,
+                          float lightFalloffDistance) {
     glUseProgram (program_);
     glProgramUniformMatrix4fv (program_, viewProjectionLocation_, 1, GL_FALSE, glm::value_ptr (viewProjection));
     glProgramUniform3fv (program_, cameraPositionLocation_, 1, glm::value_ptr (cameraPosition));
-    constexpr glm::vec3 lightPosition { 0.0F, 3.62F, 0.0F };
     glProgramUniform3fv (program_, lightPositionLocation_, 1, glm::value_ptr (lightPosition));
+    glProgramUniform3fv (program_, lightColorLocation_, 1, glm::value_ptr (lightColor));
+    glProgramUniform1f (program_, lightFalloffDistanceLocation_, lightFalloffDistance);
 }
 
 void Renderer::draw(Primitive primitive, const glm::mat4& model, const Material& material) {
@@ -409,6 +414,8 @@ void Renderer::createProgram(const std::filesystem::path& projectRoot) {
     ambientFloorLocation_ = glGetUniformLocation (program_, "uAmbientFloor");
     directLightScaleLocation_ = glGetUniformLocation (program_, "uDirectLightScale");
     lightPositionLocation_ = glGetUniformLocation (program_, "uLightPosition");
+    lightColorLocation_ = glGetUniformLocation (program_, "uLightColor");
+    lightFalloffDistanceLocation_ = glGetUniformLocation (program_, "uLightFalloffDistance");
 }
 
 void Renderer::setUniforms(const glm::mat4& model, const Material& material) {

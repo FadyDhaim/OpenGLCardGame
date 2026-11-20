@@ -23,7 +23,7 @@ struct Material {
     GLuint packedTexture = 0;
     glm::vec2 uvScale{1.0F};
     float emissive = 0.0F;
-    float ambientFloor = 0.20F;
+    float ambientFloor = 0.12F;
     float directLightScale = 1.0F;
 };
 
@@ -37,7 +37,11 @@ public:
 
     void initialize(const std::filesystem::path& projectRoot);
     [[nodiscard]] GLuint loadTexture(const std::filesystem::path& filePath, bool srgb);
-    void beginFrame(const glm::mat4& viewProjection, const glm::vec3& cameraPosition);
+    void beginFrame(const glm::mat4& viewProjection,
+                    const glm::vec3& cameraPosition,
+                    const glm::vec3& lightPosition,
+                    const glm::vec3& lightColor,
+                    float lightFalloffDistance);
     void draw(Primitive primitive, const glm::mat4& model, const Material& material);
 
 private:
@@ -78,5 +82,7 @@ private:
     GLint ambientFloorLocation_ = -1;
     GLint directLightScaleLocation_ = -1;
     GLint lightPositionLocation_ = -1;
+    GLint lightColorLocation_ = -1;
+    GLint lightFalloffDistanceLocation_ = -1;
     std::vector<GLuint> textures_;
 };
