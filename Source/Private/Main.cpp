@@ -7,14 +7,14 @@
 #include "Application.hpp"
 #include "GameState.hpp"
 
-int main(int argc, char** argv) {
-    assert(argc > 0);
+int main(int argc, char* argv[]) {
+    assert (argc > 0);
 
     try {
-        const std::filesystem::path executablePath = std::filesystem::canonical(argv[0]);
-        std::filesystem::current_path(executablePath.parent_path().parent_path());
+        const std::filesystem::path executablePath = std::filesystem::canonical (argv[0]);
+        std::filesystem::current_path (executablePath.parent_path().parent_path());
 
-        if (argc > 1 && std::string_view(argv[1]) == "--self-test") {
+        if (argc > 1 && std::string_view (argv[1]) == "--self-test") {
             return runGameStateTests();
         }
 

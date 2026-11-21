@@ -17,11 +17,11 @@ enum class Primitive {
 };
 
 struct Material {
-    glm::vec3 color{1.0F};
+    glm::vec3 color { 1.0F };
     GLuint diffuseTexture = 0;
     GLuint normalTexture = 0;
     GLuint packedTexture = 0;
-    glm::vec2 uvScale{1.0F};
+    glm::vec2 uvScale { 1.0F };
     float emissive = 0.0F;
     float ambientFloor = 0.12F;
     float directLightScale = 1.0F;
@@ -37,11 +37,13 @@ public:
 
     void initialize(const std::filesystem::path& projectRoot);
     [[nodiscard]] GLuint loadTexture(const std::filesystem::path& filePath, bool srgb);
-    void beginFrame(const glm::mat4& viewProjection,
-                    const glm::vec3& cameraPosition,
-                    const glm::vec3& lightPosition,
-                    const glm::vec3& lightColor,
-                    float lightFalloffDistance);
+    void beginFrame(
+        const glm::mat4& viewProjection,
+        const glm::vec3& cameraPosition,
+        const glm::vec3& lightPosition,
+        const glm::vec3& lightColor,
+        float lightFalloffDistance
+    );
     void draw(Primitive primitive, const glm::mat4& model, const Material& material);
 
 private:
@@ -59,16 +61,16 @@ private:
         GLsizei indexCount = 0;
     };
 
-    [[nodiscard]] static std::vector<Vertex> makePlaneVertices();
-    [[nodiscard]] static std::vector<Vertex> makeCubeVertices(std::vector<unsigned int>& indices);
-    [[nodiscard]] static std::vector<Vertex> makeCylinderVertices(std::vector<unsigned int>& indices, bool cone);
-    [[nodiscard]] static std::vector<Vertex> makeSphereVertices(std::vector<unsigned int>& indices);
-    void createMesh(Mesh& mesh, const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
+    [[nodiscard]] static std::vector <Vertex> makePlaneVertices();
+    [[nodiscard]] static std::vector <Vertex> makeCubeVertices(std::vector <unsigned int>& indices);
+    [[nodiscard]] static std::vector <Vertex> makeCylinderVertices(std::vector <unsigned int>& indices, bool cone);
+    [[nodiscard]] static std::vector <Vertex> makeSphereVertices(std::vector <unsigned int>& indices);
+    void createMesh(Mesh& mesh, const std::vector <Vertex>& vertices, const std::vector <unsigned int>& indices);
     void createProgram(const std::filesystem::path& projectRoot);
     void setUniforms(const glm::mat4& model, const Material& material);
 
     GLuint program_ = 0;
-    std::array<Mesh, 5> meshes_{};
+    std::array <Mesh, 5> meshes_ {};
     GLint viewProjectionLocation_ = -1;
     GLint modelLocation_ = -1;
     GLint normalMatrixLocation_ = -1;
@@ -84,5 +86,5 @@ private:
     GLint lightPositionLocation_ = -1;
     GLint lightColorLocation_ = -1;
     GLint lightFalloffDistanceLocation_ = -1;
-    std::vector<GLuint> textures_;
+    std::vector <GLuint> textures_;
 };

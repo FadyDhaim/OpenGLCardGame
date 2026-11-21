@@ -1,8 +1,6 @@
 #pragma once
 
 #include <array>
-#include <cstddef>
-#include <cstdint>
 #include <random>
 #include <vector>
 
@@ -39,7 +37,7 @@ public:
     static constexpr float PlayRowZ = 0.0F;
     static constexpr float OpponentRowZ = -1.19F;
 
-    explicit GameState(std::uint32_t randomSeed = std::random_device{}());
+    explicit GameState(std::uint32_t randomSeed = std::random_device {}());
 
     void update(float deltaTime);
     bool playRandomCard();
@@ -48,7 +46,7 @@ public:
     [[nodiscard]] CameraMode cameraMode() const;
     [[nodiscard]] float cameraBlend() const;
     [[nodiscard]] std::size_t remainingCardCount() const;
-    [[nodiscard]] std::vector<CardVisual> cardVisuals() const;
+    [[nodiscard]] std::vector <CardVisual> cardVisuals() const;
     [[nodiscard]] CameraPose cameraPose() const;
     [[nodiscard]] static float slotX(std::size_t slot);
 
@@ -61,8 +59,8 @@ private:
 
     [[nodiscard]] static float easeInOut(float value);
 
-    std::array<CardState, CardCount> cards_{};
-    std::array<int, CardCount> remainingCards_{};
+    std::array <CardState, CardCount> cards_ {};
+    std::array <int, CardCount> remainingCards_ {};
     std::size_t remainingCardCount_ = CardCount;
     std::size_t nextPlaySlot_ = 0;
     std::mt19937 randomEngine_;

@@ -50,10 +50,10 @@ void main() {
     vec3 toLight = uLightPosition - vWorldPosition;
     float lightDistance = length(toLight);
     vec3 lightDirection = normalize(toLight);
-    float distanceFade = 1.0 - smoothstep(uLightFalloffDistance * 0.35, uLightFalloffDistance, lightDistance);
+    float distanceFade = 1.0 - smoothstep(uLightFalloffDistance * 0.60, uLightFalloffDistance, lightDistance);
     float attenuation = distanceFade /
                         (1.0 + 0.09 * lightDistance + 0.032 * lightDistance * lightDistance);
-    float downwardSpread = mix(0.72, 1.0, smoothstep(-0.05, 0.8, lightDirection.y));
+    float downwardSpread = smoothstep(0.0, 0.75, lightDirection.y);
     vec3 lightColor = uLightColor * attenuation * downwardSpread;
     float diffuse = max(dot(normal, lightDirection), 0.0);
     vec3 viewDirection = normalize(uCameraPosition - vWorldPosition);
@@ -61,7 +61,7 @@ void main() {
     float specularExponent = mix(96.0, 7.0, roughness);
     float specular = pow(max(dot(normal, halfwayDirection), 0.0), specularExponent);
     vec3 reflectance = mix(vec3(0.04), albedo, metallic);
-    float ambientLevel = max(0.08, uAmbientFloor);
+    float ambientLevel = max(0.02, uAmbientFloor);
     vec3 ambient = albedo * vec3(ambientLevel, ambientLevel * 0.90, ambientLevel * 0.78) * ambientOcclusion;
     vec3 direct = (albedo * lightColor * diffuse +
                    reflectance * lightColor * specular * (1.0 - roughness * 0.65)) * uDirectLightScale;

@@ -125,11 +125,13 @@ GLuint Renderer::loadTexture(const std::filesystem::path& filePath, bool srgb) {
     return texture;
 }
 
-void Renderer::beginFrame(const glm::mat4& viewProjection,
-                          const glm::vec3& cameraPosition,
-                          const glm::vec3& lightPosition,
-                          const glm::vec3& lightColor,
-                          float lightFalloffDistance) {
+void Renderer::beginFrame(
+    const glm::mat4& viewProjection,
+    const glm::vec3& cameraPosition,
+    const glm::vec3& lightPosition,
+    const glm::vec3& lightColor,
+    float lightFalloffDistance
+) {
     glUseProgram (program_);
     glProgramUniformMatrix4fv (program_, viewProjectionLocation_, 1, GL_FALSE, glm::value_ptr (viewProjection));
     glProgramUniform3fv (program_, cameraPositionLocation_, 1, glm::value_ptr (cameraPosition));

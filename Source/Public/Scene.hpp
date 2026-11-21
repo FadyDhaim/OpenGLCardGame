@@ -12,10 +12,12 @@ public:
     void render(const GameState& gameState, int framebufferWidth, int framebufferHeight);
 
 private:
-    [[nodiscard]] static glm::mat4 planeTransform(const glm::vec3& position,
-                                                  const glm::vec3& dimensions,
-                                                  float rotationXDegrees = 0.0F,
-                                                  float rotationYDegrees = 0.0F);
+    [[nodiscard]] static glm::mat4 planeTransform(
+        const glm::vec3& position,
+        const glm::vec3& dimensions,
+        float rotationXDegrees = 0.0F,
+        float rotationYDegrees = 0.0F
+    );
     [[nodiscard]] static glm::mat4 boxTransform(const glm::vec3& position, const glm::vec3& dimensions);
     void drawRoom();
     void drawTable();
@@ -28,5 +30,5 @@ private:
     GLuint floorNormalTexture_ = 0;
     GLuint floorPackedTexture_ = 0;
     GLuint posterTexture_ = 0;
-    std::array<GLuint, GameState::CardCount> cardTextures_{};
+    std::array <GLuint, GameState::CardCount> cardTextures_ {};
 };
