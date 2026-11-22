@@ -21,9 +21,8 @@ int runGameStateTests() {
         const auto initialCards = state.cardVisuals();
         const CameraPose initialCamera = state.cameraPose();
         const auto cardCenterZ = [] (const CardVisual& card) {
-            constexpr float degreesToRadians = 0.01745329252F;
             return card.bottomAnchor.z - GameState::CardHeight * 0.5F *
-                   std::sin (card.pitchDegrees * degreesToRadians);
+                   std::sin (glm::radians (card.pitchDegrees));
         };
         require (initialCards.size() == GameState::CardCount, "initial card count must be five");
         require (state.remainingCardCount() == GameState::CardCount, "all cards must begin in the deck");
@@ -37,7 +36,7 @@ int runGameStateTests() {
             require (initialCards[index].playSlot == -1, "initial cards must not reserve a play slot");
             require (
                 std::abs (
-                    initialCards[index].bottomAnchor.x - (static_cast <float> (index) - 2.0F) * GameState::CardSpacing
+                    initialCards[index].bottomAnchor.x - GameState::slotX (index)
                 ) < 0.001F,
                 "initial cards must be evenly spaced"
             );
@@ -51,7 +50,7 @@ int runGameStateTests() {
             );
         }
         const float overheadTableSpan = 2.0F * (initialCamera.position.y - GameState::TableTopY) *
-                                        std::tan (initialCamera.fieldOfViewDegrees * 0.00872664626F);
+                                        std::tan (glm::radians (initialCamera.fieldOfViewDegrees) / 2);
         require (
             overheadTableSpan > GameState::DeckRowZ - GameState::OpponentRowZ + GameState::CardHeight,
             "the overhead camera must include the full card-row depth"
@@ -70,13 +69,14 @@ int runGameStateTests() {
         );
         require (movingCard != halfwayCards.end(), "the played card must retain its reserved play slot");
         require (
-            std::abs (cardCenterZ (*movingCard) - (GameState::DeckRowZ + GameState::PlayRowZ) * 0.5F) < 0.001F,
-            "the card must make measurable progress before the shortened flight ends"
+            std::abs (cardCenterZ (*movingCard) - (GameState::DeckRowZ - GameState::PlayRowZ) * 0.5F) < 0.001F,
+            "the card's depth center must be halfway through the two rows given a half-complete animation"
         );
         movingState.update (GameState::CardFlightDuration * 0.5F);
         const auto landedCards = movingState.cardVisuals();
-        const auto landedCard = std::ranges::find_if (
-            landedCards,
+        const auto landedCard = std::find_if (
+            landedCards.begin(),
+            landedCards.end(),
             [] (const CardVisual& card) {
                 return card.played && card.playSlot == 0;
             }
@@ -102,22 +102,21 @@ int runGameStateTests() {
         require (!state.playRandomCard(), "playing with an empty deck must be a no-op");
         state.update (GameState::CardFlightDuration);
         for (const CardVisual& card: state.cardVisuals()) {
-            if (card.played) {
-                const float expectedX = (static_cast <float> (card.playSlot) - 2.0F) * GameState::CardSpacing;
-                require (
-                    std::abs (card.bottomAnchor.x - expectedX) < 0.001F,
-                    "completed cards must line up in their reserved play slots"
-                );
-                require (
-                    std::abs (cardCenterZ (card) - GameState::PlayRowZ) < 0.001F,
-                    "completed cards must be centered in the play row"
-                );
-            }
+            require (card.played, "all 5 cards must have been played");
+            const float expectedX = GameState::slotX (card.playSlot);
+            require (
+                std::abs (card.bottomAnchor.x - expectedX) < 0.001F,
+                "completed cards must line up in their reserved play slots"
+            );
+            require (
+                std::abs (cardCenterZ (card) - GameState::PlayRowZ) < 0.001F,
+                "completed cards must be centered in the play row"
+            );
         }
 
         GameState cameraState (7U);
         cameraState.setCameraMode (CameraMode::PlayerPerspective);
-        cameraState.update (0.40F);
+        cameraState.update (GameState::CameraTransitionDuration / 2);
         const float halfwayBlend = cameraState.cameraBlend();
         require (halfwayBlend > 0.0F && halfwayBlend < 1.0F, "camera movement must ease through intermediate poses");
         const auto transitioningCards = cameraState.cardVisuals();
@@ -140,7 +139,7 @@ int runGameStateTests() {
             std::abs (cameraState.cameraBlend() - halfwayBlend) < 0.001F,
             "interrupting a camera transition must preserve the current pose"
         );
-        cameraState.update (0.85F);
+        cameraState.update (GameState::CameraTransitionDuration);
         require (
             std::abs (cameraState.cameraBlend()) < 0.001F,
             "camera transition must return to the top-down endpoint"
@@ -152,7 +151,7 @@ int runGameStateTests() {
             );
         }
         cameraState.setCameraMode (CameraMode::PlayerPerspective);
-        cameraState.update (0.85F);
+        cameraState.update (GameState::CameraTransitionDuration);
         for (const CardVisual& card: cameraState.cardVisuals()) {
             require (
                 std::abs (card.pitchDegrees) < 0.001F,

@@ -12,13 +12,16 @@ public:
     void render(const GameState& gameState, int framebufferWidth, int framebufferHeight);
 
 private:
-    [[nodiscard]] static glm::mat4 planeTransform(
+
+    static glm::mat4 planeTransform(
         const glm::vec3& position,
         const glm::vec3& dimensions,
         float rotationXDegrees = 0.0F,
         float rotationYDegrees = 0.0F
     );
-    [[nodiscard]] static glm::mat4 boxTransform(const glm::vec3& position, const glm::vec3& dimensions);
+
+
+    static glm::mat4 boxTransform(const glm::vec3& position, const glm::vec3& dimensions);
     void drawRoom();
     void drawTable();
     void drawProps();

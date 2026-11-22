@@ -1,7 +1,6 @@
 #include "Scene.hpp"
 
 #include <array>
-#include <cmath>
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -49,8 +48,13 @@ void Scene::initialize(const std::filesystem::path& projectRoot) {
 
 void Scene::render(const GameState& gameState, int framebufferWidth, int framebufferHeight) {
     const CameraPose camera = gameState.cameraPose();
-    const glm::vec3 direction = glm::normalize (camera.target - camera.position);
-    const glm::vec3 up = std::abs (glm::dot (direction, glm::vec3 (0.0F, 1.0F, 0.0F))) > 0.98F
+    const glm::vec3 forward = glm::normalize (camera.target - camera.position);
+    const glm::vec3 up = std::abs (
+                             glm::dot (
+                                 forward,
+                                 glm::vec3 (0.0F, 1.0F, 0.0F)
+                             )
+                         ) > 0.98F //within 11.5 degrees between forward and world up
                              ? glm::vec3 (0.0F, 0.0F, -1.0F)
                              : glm::vec3 (0.0F, 1.0F, 0.0F);
     const glm::mat4 view = glm::lookAt (camera.position, camera.target, up);

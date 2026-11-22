@@ -36,7 +36,7 @@ public:
     Renderer& operator=(const Renderer&) = delete;
 
     void initialize(const std::filesystem::path& projectRoot);
-    [[nodiscard]] GLuint loadTexture(const std::filesystem::path& filePath, bool srgb);
+     GLuint loadTexture(const std::filesystem::path& filePath, bool srgb);
     void beginFrame(
         const glm::mat4& viewProjection,
         const glm::vec3& cameraPosition,
@@ -61,10 +61,10 @@ private:
         GLsizei indexCount = 0;
     };
 
-    [[nodiscard]] static std::vector <Vertex> makePlaneVertices();
-    [[nodiscard]] static std::vector <Vertex> makeCubeVertices(std::vector <unsigned int>& indices);
-    [[nodiscard]] static std::vector <Vertex> makeCylinderVertices(std::vector <unsigned int>& indices, bool cone);
-    [[nodiscard]] static std::vector <Vertex> makeSphereVertices(std::vector <unsigned int>& indices);
+     static std::vector <Vertex> makePlaneVertices();
+     static std::vector <Vertex> makeCubeVertices(std::vector <unsigned int>& indices);
+     static std::vector <Vertex> makeCylinderVertices(std::vector <unsigned int>& indices, bool cone);
+     static std::vector <Vertex> makeSphereVertices(std::vector <unsigned int>& indices);
     void createMesh(Mesh& mesh, const std::vector <Vertex>& vertices, const std::vector <unsigned int>& indices);
     void createProgram(const std::filesystem::path& projectRoot);
     void setUniforms(const glm::mat4& model, const Material& material);

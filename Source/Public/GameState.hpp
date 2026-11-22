@@ -33,6 +33,7 @@ public:
     static constexpr float CardHeight = 0.91F;
     static constexpr float CardSpacing = 0.86F;
     static constexpr float CardFlightDuration = 0.28F;
+    static constexpr float CameraTransitionDuration = 0.85F;
     static constexpr float DeckRowZ = 1.19F;
     static constexpr float PlayRowZ = 0.0F;
     static constexpr float OpponentRowZ = -1.19F;
@@ -43,12 +44,12 @@ public:
     bool playRandomCard();
     void setCameraMode(CameraMode mode);
 
-    [[nodiscard]] CameraMode cameraMode() const;
-    [[nodiscard]] float cameraBlend() const;
-    [[nodiscard]] std::size_t remainingCardCount() const;
-    [[nodiscard]] std::vector <CardVisual> cardVisuals() const;
-    [[nodiscard]] CameraPose cameraPose() const;
-    [[nodiscard]] static float slotX(std::size_t slot);
+    CameraMode cameraMode() const;
+    float cameraBlend() const;
+    std::size_t remainingCardCount() const;
+    std::vector <CardVisual> cardVisuals() const;
+    CameraPose cameraPose() const;
+    static float slotX(std::size_t slot);
 
 private:
     struct CardState {
@@ -57,7 +58,7 @@ private:
         double startTime = 0.0;
     };
 
-    [[nodiscard]] static float easeInOut(float value);
+    static float easeInOut(float value);
 
     std::array <CardState, CardCount> cards_ {};
     std::array <int, CardCount> remainingCards_ {};
